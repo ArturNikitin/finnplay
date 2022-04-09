@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+<div>
+    <div>
+        <span>Hello!</span> <span th:text="${userDto.getFirstName()}"/>
+    </div>
+    <div>
+        <span>Firstname: </span> <span th:text="*{userDto.getFirstName()}"/>
+    </div>
+    <div>
+        <span>Lastname: </span> <span th:text="*{userDto.getLastName()}"/>
+    </div>
+    <div>
+        <span>Email: </span> <span th:text="*{userDto.getEmail()}"/>
+    </div>
+    <div>
+        <span>Your BD: </span><span th:text="${#dates.format(userDto.birthDate, 'dd/MM/yyyy')}"/>
+    </div>
+    <div>
+        <button th:href="/edit/profile">Edit profile info</button>
+    </div>
+
+    <form method="POST" th:object="${userDto}" th:action="@{/update/{id}(id=*{id})}">
+        <div class="form-group">
+            <div>
+                <span>First name</span>
+                <input type="text" th:field="*{firstName}" class="form-control"
+                       autofocus="true">
+                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            </div>
+            <div>
+                <span>Last name</span>
+                <input type="text" th:field="*{lastName}" class="form-control"
+                       autofocus="true">
+                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+                <input type="hidden" th:field="*{email}" th:value="*{email}"/>
+            </div>
+            <div>
+                <span>Birthday</span>
+                <input type="date" th:field="*{birthDate}" placeholder="Birthday"/>
+                <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
+            </div>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>
