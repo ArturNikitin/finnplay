@@ -21,6 +21,12 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.security.Principal;
 
+import static com.example.finplay.controller.View.PROFILE;
+import static com.example.finplay.controller.View.SIGNUP;
+import static com.example.finplay.controller.View.UPDATE_EMAIL;
+import static com.example.finplay.controller.View.UPDATE_PASSWORD;
+import static com.example.finplay.controller.View.UPDATE_PROFILE;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -40,42 +46,42 @@ public class UserController {
 
 	@GetMapping("/signup")
 	public String signup(Model model) {
-		log.info("/signup");
+		log.info("GET: signup");
 		model.addAttribute(new UserRegistrationForm());
-		return "signup";
+		return SIGNUP.value;
 	}
 
 	@PostMapping("/signup")
 	public ModelAndView signup(@ModelAttribute @Valid UserRegistrationForm user,
 	                           BindingResult bindingResult) {
-		log.info("/signup post: " + user.toString());
+		log.info("POST: /signup: " + user.toString());
 		if (bindingResult.hasErrors()) return new ModelAndView("signup");
 		UserDto userDto = userService.create(user);
-		var modelView = new ModelAndView("redirect:profile");
+		var modelView = new ModelAndView("redirect:" + PROFILE.value);
 		modelView.addObject("user", userDto);
 		return modelView;
 	}
 
-	@GetMapping("/edit/profile/{userId}")
-	public String getEditProfile(Model model, @PathVariable final Long userId) {
-		log.info("/edit/profile: " + userId);
+	@GetMapping("/update/profile/{userId}")
+	public String getUpdateProfile(Model model, @PathVariable final Long userId) {
+		log.info("GET: update/profile: " + userId);
 		UserDto user = userService.getById(userId);
 		model.addAttribute("userDto", user);
-		return "editProfile";
+		return UPDATE_PROFILE.value;
 	}
 
-	@PostMapping("/edit/profile/{userId}")
+	@PostMapping("/update/profile/{userId}")
 	public ModelAndView updateProfile(@Valid @ModelAttribute UserDto userDto,
 	                                  BindingResult bindingResult,
 	                                  @PathVariable final Long userId) {
-		log.info("/edit/profile: " + userDto.toString());
+		log.info("POST: update/profile: " + userDto.toString());
 		if (bindingResult.hasErrors()) {
-			ModelAndView profile = new ModelAndView("editProfile");
+			ModelAndView profile = new ModelAndView(UPDATE_PROFILE.value);
 			profile.addObject("userDto", userService.getById(userId));
 			profile.addObject("org.springframework.validation.BindingResult.userDto", bindingResult);
 			return profile;
 		}
-		ModelAndView profile = new ModelAndView("profile");
+		ModelAndView profile = new ModelAndView(PROFILE.value);
 		var updated = userService.update(userId, userDto);
 		var modelView = profile;
 		modelView.addObject("userDto", updated);
@@ -84,61 +90,61 @@ public class UserController {
 
 	@GetMapping("/update/email/{userId}")
 	public String updateEmail(Model model, @PathVariable final Long userId) {
-		log.info("/edit/profile: " + userId);
+		log.info("GET: update/email: " + userId);
 		UserDto userDto = userService.getById(userId);
 		model.addAttribute("userDto", userDto);
 		model.addAttribute("userCred", new UserCred());
-		return "updateEmail";
+		return UPDATE_EMAIL.value;
 	}
 
 	@PostMapping("/update/email/{userId}")
 	public String updateEmail(@Valid @ModelAttribute UserCred userCred,
-				  BindingResult bindingResult,
+	                          BindingResult bindingResult,
 	                          @PathVariable final Long userId,
 	                          Model model) {
-		log.info("/update/email " + userCred.getEmail());
-		if(bindingResult.hasErrors()){
+		log.info("POST: update/email " + userCred.getEmail());
+		if (bindingResult.hasErrors()) {
 			model.addAttribute("userId", userId);
-			return "updateEmail";
+			return UPDATE_EMAIL.value;
 		}
 		UserDto userDto = userService.updateEmail(userId, userCred);
 		model.addAttribute("userDto", userDto);
-		return "profile";
+		return PROFILE.value;
 	}
 
 	@GetMapping("/profile")
 	public String getProfile(Principal principal, Model model) {
-		log.info("/profile: " + principal.getName());
+		log.info("GET: /profile: " + principal.getName());
 		UserDto user = userService.get(principal.getName());
 		model.addAttribute("userDto", user);
-		return "profile";
+		return PROFILE.value;
 	}
 
 	@GetMapping("/update/password/{userId}")
 	public String updatePassword(Model model,
 	                             @PathVariable final Long userId) {
-		log.info("/update/password " + userId);
+		log.info("GET: update/password " + userId);
 		UserDto user = userService.getById(userId);
 		model.addAttribute("userDto", user);
 		model.addAttribute("newPasswordForm", new NewPasswordForm());
-		return "updatePassword";
+		return UPDATE_PASSWORD.value;
 	}
 
 	@PostMapping("/update/password/{userId}")
 	public String updatePassword(@Valid NewPasswordForm newPasswordForm,
 	                             final BindingResult bindingResult,
-				     Model model,
+	                             Model model,
 	                             @PathVariable final Long userId) {
 		log.info("POST: update/password " + userId);
 		if (!newPasswordForm.getNewPassword().equals(newPasswordForm.getNewPasswordCopy())) {
 			bindingResult.addError(new FieldError("passwordForm", "newPasswordCopy", "Must be same password"));
 		}
-		if(bindingResult.hasErrors()){
+		if (bindingResult.hasErrors()) {
 			model.addAttribute("userId", userId);
-			return "updatePassword";
+			return UPDATE_PASSWORD.value;
 		}
 		UserDto userDto = userService.updatePassword(userId, newPasswordForm);
 		model.addAttribute("userDto", userDto);
-		return "profile";
+		return PROFILE.value;
 	}
 }

@@ -8,11 +8,18 @@
 <body>
 <div>
     <form th:action="@{/login}" method="post">
-        <label for="username">Username</label>:
-        <input type="text" id="username" name="username" autofocus="autofocus"/> <br/>
-        <label for="password">Password</label>:
-        <input type="password" id="password" name="password"/> <br/>
-        <input type="submit" value="Log in"/>
+        <div>
+            <label for="username">Username</label>:
+            <input type="text" id="username" name="username" autofocus="autofocus"/>
+            <span th:if="${param.keySet().contains('error')}">Wrong password or user doesn't exists</span>
+        </div>
+        <div>
+            <label for="password">Password</label>:
+            <input type="password" id="password" name="password"/>
+        </div>
+        <div>
+            <input type="submit" value="Log in"/>
+        </div>
     </form>
 </div>
 <div>

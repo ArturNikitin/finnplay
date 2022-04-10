@@ -7,7 +7,7 @@
 <body>
 <div>
     <div>
-        <span>Hello, </span> <span th:text="${userDto.getFirstName()}"/><span>!</span>
+         <h2 th:text="${'Hello ' + userDto.getFirstName() + '!'}"></h2>
     </div>
     <div>
         <span>Firstname: </span> <span th:text="*{userDto.getFirstName()}"/>
@@ -22,7 +22,7 @@
         <span>Your BD: </span><span th:text="${#dates.format(userDto.birthDate, 'dd/MM/yyyy')}"/>
     </div>
     <div>
-        <form th:action="@{/edit/profile/{id}(id=*{userDto.getId()})}">
+        <form th:action="@{/update/profile/{id}(id=*{userDto.getId()})}">
             <input type="submit" value="Update profile" />
         </form>
     </div>
@@ -37,7 +37,7 @@
         </form>
     </div>
     <div>
-        <form th:action="@{/logout}">
+        <form method="POST" th:action="@{/logout}">
             <input type="submit" value="Logout" />
         </form>
     </div>

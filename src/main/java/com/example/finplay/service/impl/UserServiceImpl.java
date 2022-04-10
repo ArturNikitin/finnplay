@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -25,8 +24,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserDto getById(Long userId) {
-		var user = userRepository.findById(userId)
-			.orElseThrow(() -> new EntityNotFoundException("User not found " + userId));
+		var user = getUserByIdOrThrow(userId);
 		return UserDto.builder()
 			.id(user.getId())
 			.email(user.getEmail())
@@ -53,16 +51,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDto update(Long userId, UserDto user) {
-		var oldUser = userRepository.findById(userId)
-			.orElseThrow(() -> new EntityNotFoundException("User not found " + user.getEmail()));
+		var oldUser = getUserByIdOrThrow(userId);
 		return saveOrUpdate(update(oldUser, user));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public UserDto get(String email) {
-		var user = userRepository.findByEmail(email)
-			.orElseThrow(() -> new EntityNotFoundException("User not found " + email));
+		var user = getUserByEmailOrThrow(email);
 		return UserDto.builder()
 			.id(user.getId())
 			.email(user.getEmail())
@@ -75,14 +71,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDto updateEmail(Long userId, UserCred userCred) {
-		var user = userRepository.findById(userId)
-			.orElseThrow(() -> new EntityNotFoundException("User not found " + userId));
-		if (!encoder.matches(userCred.getPassword(), user.getPassword()))
-			throw new SecurityException("Password is not correct");
+		var user = getUserByIdOrThrow(userId);
+		checkPassword(userCred.getPassword(), user.getPassword());
 		user.setEmail(userCred.getEmail());
-		log.info("user to save:" + user);
 		var updatedUser = saveOrUpdate(user);
-//		updateSecurity(user);
 		return updatedUser;
 
 	}
@@ -90,14 +82,27 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDto updatePassword(Long userId, NewPasswordForm passwordForm) {
-		var user = userRepository.findById(userId)
-			.orElseThrow(() -> new EntityNotFoundException("User not found " + userId));
-		if (!encoder.matches(passwordForm.getOldPassword(), user.getPassword()))
-			throw new SecurityException("WTF");
+		User user = getUserByIdOrThrow(userId);
+		checkPassword(passwordForm.getOldPassword(), user.getPassword());
 		user.setPassword(encoder.encode(passwordForm.getNewPassword()));
-		log.info("user to save:" + user);
 		var updatedUser = saveOrUpdate(user);
 		return updatedUser;
+	}
+
+	private void checkPassword(String oldPassword, String newPassword) {
+		if (!encoder.matches(oldPassword, newPassword))
+			throw new SecurityException("Password is not correct");
+	}
+
+	private User getUserByEmailOrThrow(String email) {
+		return userRepository.findByEmail(email)
+			.orElseThrow(() -> new EntityNotFoundException("User not found " + email));
+	}
+
+	private User getUserByIdOrThrow(Long userId) {
+		var user = userRepository.findById(userId)
+			.orElseThrow(() -> new EntityNotFoundException("User not found " + userId));
+		return user;
 	}
 
 	private User update(User oldUser, UserDto user) {
@@ -110,7 +115,6 @@ public class UserServiceImpl implements UserService {
 
 	private UserDto saveOrUpdate(User user) {
 		User save = userRepository.save(user);
-		log.info("saved user " + save);
 		return UserDto.builder()
 			.id(save.getId())
 			.email(save.getEmail())
