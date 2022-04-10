@@ -8,7 +8,6 @@ import com.example.finplay.dto.UserRegistrationForm;
 import com.example.finplay.model.User;
 import com.example.finplay.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,8 +88,8 @@ public class UserServiceImpl implements UserService {
 		return updatedUser;
 	}
 
-	private void checkPassword(String oldPassword, String newPassword) {
-		if (!encoder.matches(oldPassword, newPassword))
+	private void checkPassword(String passwordRaw, String encryptedPassword) {
+		if (!encoder.matches(passwordRaw, encryptedPassword))
 			throw new SecurityException("Password is not correct");
 	}
 

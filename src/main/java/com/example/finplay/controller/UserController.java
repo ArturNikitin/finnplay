@@ -126,7 +126,7 @@ public class UserController {
 		log.info("GET: update/password " + userId);
 		UserDto user = userService.getById(userId);
 		model.addAttribute("userDto", user);
-		model.addAttribute("newPasswordForm", new NewPasswordForm());
+		model.addAttribute("newPasswordForm", NewPasswordForm.builder().build());
 		return UPDATE_PASSWORD.value;
 	}
 

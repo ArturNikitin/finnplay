@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 
 @NoArgsConstructor
-@Data(staticConstructor = "of")
+@Data
 public class UserCred {
 	@Email(message = "Email is not valid")
 	@NotExists(message = "User with this email already exists")
