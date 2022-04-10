@@ -6,14 +6,14 @@
 </head>
 <body>
 <form method="POST" th:object="${userCred}" th:action="@{/update/email/{id}(id=${userId})}">
-    <div class="form-group">
+    <div>
         <div class="form-group">
-            <input type="text" th:field="*{email}" class="form-control" placeholder="New Email"
+            <input type="text" th:field="*{email}" placeholder="New Email"
                    autofocus="true">
             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
-        <div class="form-group">
-            <input type="password" th:field="*{password}" class="form-control" placeholder="Password">
+        <div>
+            <input type="password" th:field="*{password}" placeholder="Password">
             <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
         </div>
     </div>
