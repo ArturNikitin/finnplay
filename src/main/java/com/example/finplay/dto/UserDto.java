@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 @Data
@@ -20,6 +21,7 @@ public class UserDto {
 	private String firstName;
 	@NotBlank(message = "Cannot be empty")
 	private String lastName;
+	@Past
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthDate;
 }

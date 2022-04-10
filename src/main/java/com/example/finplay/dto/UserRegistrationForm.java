@@ -35,7 +35,6 @@ public class UserRegistrationForm {
 	private String lastName;
 
 	@Past
-	@NotBlank
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthDate;
 }

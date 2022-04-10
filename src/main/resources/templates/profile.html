@@ -22,32 +22,44 @@
         <span>Your BD: </span><span th:text="${#dates.format(userDto.birthDate, 'dd/MM/yyyy')}"/>
     </div>
     <div>
-        <button th:href="/edit/profile">Edit profile info</button>
+        <form th:action="@{/edit/profile/{id}(id=*{userDto.getId()})}">
+            <input type="submit" value="Update Profile" />
+        </form>
+    </div>
+    <div>
+        <form th:action="@{/update/email/{id}(id=*{userDto.getId()})}">
+            <input type="submit" value="Update Email" />
+        </form>
+    </div>
+    <div>
+        <form th:action="@{/update/password/{id}(id=*{userDto.getId()})}">
+            <input type="submit" value="Update password" />
+        </form>
     </div>
 
-    <form method="POST" th:object="${userDto}" th:action="@{/update/{id}(id=*{id})}">
-        <div class="form-group">
-            <div>
-                <span>First name</span>
-                <input type="text" th:field="*{firstName}" class="form-control"
-                       autofocus="true">
-                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
-            </div>
-            <div>
-                <span>Last name</span>
-                <input type="text" th:field="*{lastName}" class="form-control"
-                       autofocus="true">
-                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
-                <input type="hidden" th:field="*{email}" th:value="*{email}"/>
-            </div>
-            <div>
-                <span>Birthday</span>
-                <input type="date" th:field="*{birthDate}" placeholder="Birthday"/>
-                <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
-            </div>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
+<!--    <form method="POST" th:object="${userDto}" th:action="@{/update/{id}(id=*{id})}">-->
+<!--        <div class="form-group">-->
+<!--            <div>-->
+<!--                <span>First name</span>-->
+<!--                <input type="text" th:field="*{firstName}" class="form-control"-->
+<!--                       autofocus="true">-->
+<!--                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <span>Last name</span>-->
+<!--                <input type="text" th:field="*{lastName}" class="form-control"-->
+<!--                       autofocus="true">-->
+<!--                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>-->
+<!--                <input type="hidden" th:field="*{email}" th:value="*{email}"/>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <span>Birthday</span>-->
+<!--                <input type="date" th:field="*{birthDate}" placeholder="Birthday"/>-->
+<!--                <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <button type="submit">Submit</button>-->
+<!--    </form>-->
 </div>
 </body>
 </html>
