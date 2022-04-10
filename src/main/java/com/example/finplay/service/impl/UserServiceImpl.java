@@ -8,22 +8,19 @@ import com.example.finplay.dto.UserRegistrationForm;
 import com.example.finplay.model.User;
 import com.example.finplay.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder encoder;
-	@Lazy
-	private final AuthenticationManager authenticationManager;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -33,6 +30,7 @@ public class UserServiceImpl implements UserService {
 		return UserDto.builder()
 			.id(user.getId())
 			.email(user.getEmail())
+			.birthDate(user.getBirthdate())
 			.firstName(user.getFirstName())
 			.lastName(user.getLastName())
 			.build();
@@ -82,8 +80,9 @@ public class UserServiceImpl implements UserService {
 		if (!encoder.matches(userCred.getPassword(), user.getPassword()))
 			throw new SecurityException("Password is not correct");
 		user.setEmail(userCred.getEmail());
+		log.info("user to save:" + user);
 		var updatedUser = saveOrUpdate(user);
-		updateSecurity(user);
+//		updateSecurity(user);
 		return updatedUser;
 
 	}
@@ -95,15 +94,10 @@ public class UserServiceImpl implements UserService {
 			.orElseThrow(() -> new EntityNotFoundException("User not found " + userId));
 		if (!encoder.matches(passwordForm.getOldPassword(), user.getPassword()))
 			throw new SecurityException("WTF");
-		user.setPassword(passwordForm.getNewPassword());
+		user.setPassword(encoder.encode(passwordForm.getNewPassword()));
+		log.info("user to save:" + user);
 		var updatedUser = saveOrUpdate(user);
-		updateSecurity(user);
 		return updatedUser;
-	}
-
-	private void updateSecurity(User user) {
-		var encode = encoder.encode(user.getPassword());
-		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), encode));
 	}
 
 	private User update(User oldUser, UserDto user) {
@@ -116,6 +110,7 @@ public class UserServiceImpl implements UserService {
 
 	private UserDto saveOrUpdate(User user) {
 		User save = userRepository.save(user);
+		log.info("saved user " + save);
 		return UserDto.builder()
 			.id(save.getId())
 			.email(save.getEmail())

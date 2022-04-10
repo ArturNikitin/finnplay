@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form method="POST" th:object="${userCred}" th:action="@{/update/email/{id}(id=${userDto.getId()})}">
+<form method="POST" th:object="${userCred}" th:action="@{/update/email/{id}(id=${userId})}">
     <div class="form-group">
         <div class="form-group">
             <input type="text" th:field="*{email}" class="form-control" placeholder="New Email"

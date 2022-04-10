@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <title>Log in with your account</title>
+    <meta charset="utf-8">
+    <title>Log in with your account</title>
 </head>
 
 <body>
 <div>
-  <form th:action="@{/login}" method="post">
-    <label for="username">Username</label>:
-    <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
-    <label for="password">Password</label>:
-    <input type="password" id="password" name="password" /> <br />
-    <input type="submit" value="Log in" />
-  </form>
+    <form th:action="@{/login}" method="post">
+        <label for="username">Username</label>:
+        <input type="text" id="username" name="username" autofocus="autofocus"/> <br/>
+        <label for="password">Password</label>:
+        <input type="password" id="password" name="password"/> <br/>
+        <input type="submit" value="Log in"/>
+    </form>
 </div>
-
+<div>
+    <span>Or create new account</span>
+    <form th:action="@{/signup}">
+        <input type="submit" value="Sign up" />
+    </form>
+</div>
 </body>
 </html>

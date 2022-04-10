@@ -3,12 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Index</title>
+    <title>Welcome</title>
 </head>
 <body>
     <div>
-        <a href="/signup">Sign Up</a>
-        <a href="/login">Login</a>
+        <h5>Welcome!</h5>
+        <div>
+            <form th:action="@{/signup}">
+                <input type="submit" value="Sign up" />
+            </form>
+        </div>
+        <div>
+            <form th:action="@{/login}">
+                <input type="submit" value="Login" />
+            </form>
+        </div>
     </div>
 </body>
 </html>

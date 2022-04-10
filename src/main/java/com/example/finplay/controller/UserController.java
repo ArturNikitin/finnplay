@@ -73,7 +73,6 @@ public class UserController {
 			ModelAndView profile = new ModelAndView("editProfile");
 			profile.addObject("userDto", userService.getById(userId));
 			profile.addObject("org.springframework.validation.BindingResult.userDto", bindingResult);
-			log.info("binding resul " + bindingResult);
 			return profile;
 		}
 		ModelAndView profile = new ModelAndView("profile");
@@ -94,10 +93,17 @@ public class UserController {
 
 	@PostMapping("/update/email/{userId}")
 	public String updateEmail(@Valid @ModelAttribute UserCred userCred,
-	                          @PathVariable final Long userId) {
+				  BindingResult bindingResult,
+	                          @PathVariable final Long userId,
+	                          Model model) {
 		log.info("/update/email " + userCred.getEmail());
-		userService.updateEmail(userId, userCred);
-		return "redirect:profile/" + userId;
+		if(bindingResult.hasErrors()){
+			model.addAttribute("userId", userId);
+			return "updateEmail";
+		}
+		UserDto userDto = userService.updateEmail(userId, userCred);
+		model.addAttribute("userDto", userDto);
+		return "profile";
 	}
 
 	@GetMapping("/profile")
@@ -131,7 +137,8 @@ public class UserController {
 			model.addAttribute("userId", userId);
 			return "updatePassword";
 		}
-		userService.updatePassword(userId, newPasswordForm);
+		UserDto userDto = userService.updatePassword(userId, newPasswordForm);
+		model.addAttribute("userDto", userDto);
 		return "profile";
 	}
 }

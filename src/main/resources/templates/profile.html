@@ -7,7 +7,7 @@
 <body>
 <div>
     <div>
-        <span>Hello!</span> <span th:text="${userDto.getFirstName()}"/>
+        <span>Hello, </span> <span th:text="${userDto.getFirstName()}"/><span>!</span>
     </div>
     <div>
         <span>Firstname: </span> <span th:text="*{userDto.getFirstName()}"/>
@@ -23,17 +23,22 @@
     </div>
     <div>
         <form th:action="@{/edit/profile/{id}(id=*{userDto.getId()})}">
-            <input type="submit" value="Update Profile" />
+            <input type="submit" value="Update profile" />
         </form>
     </div>
     <div>
         <form th:action="@{/update/email/{id}(id=*{userDto.getId()})}">
-            <input type="submit" value="Update Email" />
+            <input type="submit" value="Update email" />
         </form>
     </div>
     <div>
         <form th:action="@{/update/password/{id}(id=*{userDto.getId()})}">
             <input type="submit" value="Update password" />
+        </form>
+    </div>
+    <div>
+        <form th:action="@{/logout}">
+            <input type="submit" value="Logout" />
         </form>
     </div>
 

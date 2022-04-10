@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -35,6 +36,7 @@ public class UserRegistrationForm {
 	private String lastName;
 
 	@Past
+	@NotNull
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthDate;
 }
